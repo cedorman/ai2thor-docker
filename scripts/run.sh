@@ -12,7 +12,8 @@ if [[ -e /tmp/.X11-unix && ! -z ${DISPLAY+x} ]]; then
   xhost +local:root
 fi;
 
-docker run --privileged $X11_PARAMS -it ai2thor-docker:latest python3 example_agent.py
+# docker run --privileged $X11_PARAMS -it ai2thor-docker:latest python3 example_agent.py
+docker run --privileged $X11_PARAMS -it mcs-ai2thor-docker:latest python3 mcs_test.py
 
 if [[ -e /tmp/.X11-unix && ! -z ${DISPLAY+x} ]]; then
     xhost -local:root
