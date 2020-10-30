@@ -4,6 +4,19 @@
 
 --------------------------------------------------------------------------------
 
+# MCS Version of AI2-THOR Docker
+
+The Machine Common Sense project is using code developed by the AI2-THOR project
+(see https://github.com/NextCenturyCorporation/MCS and
+https://github.com/NextCenturyCorporation/ai2thor).  We would like to be able to
+run evaluations on many different parameters in simulations.  We are targeting
+AWS Batch, which uses the Elastic Compute Service.  We need to have a docker
+container that is able to run our code, extending AI2-THOR code, entirely
+self-contained.
+
+We thank the AI2-THOR project for their hard work and their generous
+contribution of code.
+
 # AI2-THOR Docker
 
 AI2-THOR Docker is a mini-framework that simplifies the task of running [AI2-THOR](https://ai2thor.allenai.org) within Docker. The primary feature this adds is configuring and running a X server to be used by Unity3d to render scenes. 
