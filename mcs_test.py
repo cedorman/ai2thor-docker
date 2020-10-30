@@ -5,8 +5,10 @@
 # it saves an image 
 #
 #
-
+from ai2thor_docker.x_server import startx
 import machine_common_sense as mcs
+
+startx()
 
 directory = "/mcs/"
 unity_app_file_path = directory + "MCS-AI2-THOR-Unity-App-v0.3.1.x86_64"

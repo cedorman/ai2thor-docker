@@ -32,7 +32,8 @@ RUN tar -xzvf /mcs/MCS-AI2-THOR-Unity-App-v${mcsversion}_Data.tar.gz -C /mcs && 
         rm /mcs/MCS-AI2-THOR-Unity-App-v${mcsversion}_Data.tar.gz
 
 # Copy a local example
-
+ADD mcs_test.py /mcs
+ADD retrieval_goal-0005.json /mcs
 
 #   
 #   
