@@ -33,6 +33,8 @@ else
     exit 1
 fi
 
+CUDA_VERSION=10.1
+
 
 if (id -nG | grep -qw "docker") || [ "$USER" == "root" ]; then
     echo "Building Docker container with CUDA Version: $CUDA_VERSION, NVIDIA Driver: $NVIDIA_VERSION"

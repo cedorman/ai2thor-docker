@@ -82,6 +82,7 @@ def _startx(display):
         with open(path, "w") as f:
             f.write(generate_xorg_conf(devices))
         command = shlex.split("Xorg -noreset +extension GLX +extension RANDR +extension RENDER -config %s :%s" % (path, display))
+        print(f"Command staring x: {command}")
         proc = subprocess.Popen(command)
         atexit.register(lambda: proc.poll() is None and proc.kill())
         proc.wait()
