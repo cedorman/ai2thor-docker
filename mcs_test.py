@@ -5,9 +5,11 @@
 # it saves an image 
 #
 #
-from ai2thor_docker.x_server import startx
 import machine_common_sense as mcs
+from ai2thor_docker.x_server import startx
 
+# This uses code from AI2THOR Docker that creates a xorg.conf based on the
+# current GPU and then starts a headless Xorg in a new thread.
 startx()
 
 directory = "/mcs/"
@@ -31,7 +33,7 @@ for x in range(0, 10):
 
     if len(image_list) == 1:
         image = image_list[0]
-	filename = directory + "output_image_" + str(x) + ".jpg"
+        filename = directory + "output_image_" + str(x) + ".jpg"
         image.save(filename)
         print(f"Image saved to {filename}")
     else:
