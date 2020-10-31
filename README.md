@@ -40,7 +40,7 @@ mcs-ai2thor-docker                                                latest        
 To run it: 
 
    ```
-buntu@ip-172-31-49-125:~/mcs/ai2thor-docker$ ./scripts/run.sh 
+ubuntu@ip-172-31-49-125:~/mcs/ai2thor-docker$ ./scripts/run.sh 
 /usr/lib/python3/dist-packages/requests/__init__.py:80: RequestsDependencyWarning: urllib3 (1.25.11) or chardet (3.0.4) doesn't match a supported version!
   RequestsDependencyWarning)
 Command staring x: ['Xorg', '-noreset', '+extension', 'GLX', '+extension', 'RANDR', '+extension', 'RENDER', '-config', '/tmp/tmpdsvjnhkn', ':0']
@@ -85,7 +85,11 @@ Image saved to /mcs/output_image_9.jpg
 
 If you look in the script file, it is simply creating the docker container and telling it to run a program called mcs_test.py
 
+Note:  In the mcs_test.py, there is a line:   startx()  that calls the AI2-Thor code that actually starts an X server.
+
 The following is from the original README.md
+
+
 
 
 # AI2-THOR Docker
