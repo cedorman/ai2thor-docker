@@ -17,6 +17,29 @@ self-contained.
 We thank the AI2-THOR project for their hard work and their generous
 contribution of code.
 
+## Building ##
+
+On AWS, make an instance:  Deep Learning AMI (Ubuntu 18.04) Version 35.0 - ami-01aad86525617098d  with p2.xlarge
+
+Then, create the docker container with the following commands: 
+
+% git clone https://github.com/cedorman/ai2thor-docker.git
+% cd ai2thor-docker
+% ./scripts/build.sh
+% ./scripts/build_mcs.sh
+
+This will create a docker image that looks like the following: 
+
+REPOSITORY                                                        TAG                      IMAGE ID            CREATED             SIZE
+mcs-ai2thor-docker                                                latest                   876e6b8ffbc5        8 hours ago         8.52GB
+
+To run it: 
+
+% ./scripts/run.sh
+
+If you look in the script file, it is simply creating the docker container and telling it to run a program called mcs_test.py
+
+
 # AI2-THOR Docker
 
 AI2-THOR Docker is a mini-framework that simplifies the task of running [AI2-THOR](https://ai2thor.allenai.org) within Docker. The primary feature this adds is configuring and running a X server to be used by Unity3d to render scenes. 
