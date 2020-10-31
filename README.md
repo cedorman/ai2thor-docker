@@ -40,10 +40,52 @@ mcs-ai2thor-docker                                                latest        
 To run it: 
 
    ```
-% ./scripts/run.sh
-   ```
+buntu@ip-172-31-49-125:~/mcs/ai2thor-docker$ ./scripts/run.sh 
+/usr/lib/python3/dist-packages/requests/__init__.py:80: RequestsDependencyWarning: urllib3 (1.25.11) or chardet (3.0.4) doesn't match a supported version!
+  RequestsDependencyWarning)
+Command staring x: ['Xorg', '-noreset', '+extension', 'GLX', '+extension', 'RANDR', '+extension', 'RENDER', '-config', '/tmp/tmpdsvjnhkn', ':0']
+
+X.Org X Server 1.19.6
+Release Date: 2017-12-20
+X Protocol Version 11, Revision 0
+Build Operating System: Linux 4.15.0-117-generic x86_64 Ubuntu
+Current Operating System: Linux e03d11432ff4 5.4.0-1029-aws #30~18.04.1-Ubuntu SMP Tue Oct 20 11:09:25 UTC 2020 x86_64
+Kernel command line: BOOT_IMAGE=/boot/vmlinuz-5.4.0-1029-aws root=UUID=6156ec80-9446-4eb1-95e0-9ae6b7a46187 ro console=tty1 console=ttyS0 nvme_core.io_timeout=4294967295
+Build Date: 15 September 2020  07:40:51AM
+xorg-server 2:1.19.6-1ubuntu4.7 (For technical support please see http://www.ubuntu.com/support)
+Current version of pixman: 0.34.0
+        Before reporting problems, check http://wiki.x.org
+        to make sure that you have the latest version.
+Markers: (--) probed, (**) from config file, (==) default setting,
+        (++) from command line, (!!) notice, (II) informational,
+        (WW) warning, (EE) error, (NI) not implemented, (??) unknown.
+(==) Log file: "/var/log/Xorg.0.log", Time: Sat Oct 31 02:06:45 2020
+(++) Using config file: "/tmp/tmpdsvjnhkn"
+(==) Using system config directory "/usr/share/X11/xorg.conf.d"
+Found path: /mcs/MCS-AI2-THOR-Unity-App-v0.3.1.x86_64
+Mono path[0] = '/mcs/MCS-AI2-THOR-Unity-App-v0.3.1_Data/Managed'
+Mono config path = '/mcs/MCS-AI2-THOR-Unity-App-v0.3.1_Data/Mono/etc'
+Unable to preload the following plugins:
+        ScreenSelector.so
+Display 0 '0': 1024x768 (primary device).
+PlayerPrefs - Creating folder: /root/.config/unity3d/CACI with the Allen Institute for Artificial Intelligence
+PlayerPrefs - Creating folder: /root/.config/unity3d/CACI with the Allen Institute for Artificial Intelligence/MCS-AI2-THOR
+Logging to /root/.config/unity3d/CACI with the Allen Institute for Artificial Intelligence/MCS-AI2-THOR/Player.log
+Image saved to /mcs/output_image_0.jpg
+Image saved to /mcs/output_image_1.jpg
+Image saved to /mcs/output_image_2.jpg
+Image saved to /mcs/output_image_3.jpg
+Image saved to /mcs/output_image_4.jpg
+Image saved to /mcs/output_image_5.jpg
+Image saved to /mcs/output_image_6.jpg
+Image saved to /mcs/output_image_7.jpg
+Image saved to /mcs/output_image_8.jpg
+Image saved to /mcs/output_image_9.jpg
+```
 
 If you look in the script file, it is simply creating the docker container and telling it to run a program called mcs_test.py
+
+The following is from the original README.md
 
 
 # AI2-THOR Docker
