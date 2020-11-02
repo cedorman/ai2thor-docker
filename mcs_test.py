@@ -7,10 +7,14 @@
 #
 import machine_common_sense as mcs
 from ai2thor_docker.x_server import startx
+import time 
 
 # This uses code from AI2THOR Docker that creates a xorg.conf based on the
 # current GPU and then starts a headless Xorg in a new thread.
 startx()
+
+print(" Now going to sleep for 10 seconds ", flush=True)
+time.sleep(10)
 
 directory = "/mcs/"
 unity_app_file_path = directory + "MCS-AI2-THOR-Unity-App-v0.3.1.x86_64"

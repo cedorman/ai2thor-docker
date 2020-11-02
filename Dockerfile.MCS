@@ -3,20 +3,9 @@
 # 
 FROM ai2thor-docker:latest
 
-#   FROM nvidia/cudagl:10.1-base-ubuntu18.04
-#
-#   ARG DEBIAN_FRONTEND=noninteractive
-#   
-#   ENV NVIDIA_DRIVER_CAPABILITIES ${NVIDIA_DRIVER_CAPABILITIES},display
-
-# --build-arg mcsversion=0.0.x to override default in docker build command
 ARG mcsversion=0.3.1
 
 WORKDIR /mcs
-
-#   RUN apt-get update -y && \
-#       apt-get install -y git python3.6 python3-pip mesa-utils && \
-#           python3.6 -m pip install --upgrade pip setuptools wheel && \
 
 # Note:  The LC_ALL=C.UTF-8 is necessary because the OS does not seem to have
 # locale information installed.  We can either install it and set the default
@@ -31,29 +20,3 @@ RUN tar -xzvf /mcs/MCS-AI2-THOR-Unity-App-v${mcsversion}_Data.tar.gz -C /mcs && 
     chmod a+x /mcs/MCS-AI2-THOR-Unity-App-v${mcsversion}.x86_64 && \
         rm /mcs/MCS-AI2-THOR-Unity-App-v${mcsversion}_Data.tar.gz
 
-# Copy a local example
-COPY ai2thor_docker /mcs/ai2thor_docker
-ADD mcs_test.py /mcs
-ADD retrieval_goal-0005.json /mcs
-
-#   
-#   
-#   ARG CUDA_VERSION
-#   
-#   FROM nvidia/cuda:$CUDA_VERSION-devel-ubuntu18.04
-#   ARG NVIDIA_VERSION
-#   
-#   ENV DEBIAN_FRONTEND=noninteractive
-#   RUN apt-get update && apt-get -y install python3-pip libxrender1 libsm6 xserver-xorg-core xorg python3-venv vim pciutils wget git module-init-tools
-#   
-#   ENV APP_HOME /app
-#   WORKDIR $APP_HOME
-#   COPY requirements.txt scripts/install_nvidia.sh /app/
-#   RUN pip3 install --upgrade pip
-#   RUN pip3 install -r requirements.txt && python3 -c "import ai2thor.controller; ai2thor.controller.Controller(download_only=True)"
-#   RUN NVIDIA_VERSION=$NVIDIA_VERSION /app/install_nvidia.sh
-#   
-#   COPY ai2thor_docker /app/ai2thor_docker
-#   COPY example_agent.py ./
-#   
-#   CMD ["/bin/bash"]

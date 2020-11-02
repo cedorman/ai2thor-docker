@@ -45,3 +45,5 @@ else
     exit 1
 fi
 
+docker build -f Dockerfile.MCS     -t mcs-ai2thor-intermediate .
+

@@ -80,9 +80,14 @@ def _startx(display):
     try:
         fd, path = tempfile.mkstemp()
         with open(path, "w") as f:
-            f.write(generate_xorg_conf(devices))
+            new_xorg_conf = generate_xorg_conf(devices)
+            f.write(new_xorg_conf)
+            print("-------------------------")
+            print("---xorg conf ------------")
+            print(new_xorg_conf)
+            print("-------------------------")
         command = shlex.split("Xorg -noreset +extension GLX +extension RANDR +extension RENDER -config %s :%s" % (path, display))
-        print(f"Command staring x: {command}")
+        print(f"Command staring x: {command}", flush=True)
         proc = subprocess.Popen(command)
         atexit.register(lambda: proc.poll() is None and proc.kill())
         proc.wait()
