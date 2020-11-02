@@ -5,7 +5,8 @@
 #
 from mcs-ai2thor-intermediate
 
-# Copy in test code 
+# Copy in test code
+ADD run.sh /mcs
 COPY ai2thor_docker /mcs/ai2thor_docker
 ADD mcs_test.py /mcs
 ADD retrieval_goal-0005.json /mcs
