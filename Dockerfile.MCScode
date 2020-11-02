@@ -1,0 +1,14 @@
+#
+# Add test code.  Put this in its own dockerfile because it changes more frequently
+# than the other code.  The code in Dockerfile.MCS actually causes a re-build
+# everytime, which make the whole process slow.
+#
+from mcs-ai2thor-intermediate
+
+# Copy in test code 
+COPY ai2thor_docker /mcs/ai2thor_docker
+ADD mcs_test.py /mcs
+ADD retrieval_goal-0005.json /mcs
+
+
+
