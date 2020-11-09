@@ -6,7 +6,7 @@ import os.path
 from pipeline import util
 
 
-class RunJob:
+class SingleTask:
 
     def __init__(self, machine_dns, json_file_name):
         """  Passed a p2.xlarge machine name on AWS and a json file,
@@ -22,16 +22,23 @@ class RunJob:
             return
 
         # Copy the file to the machine
-        success = util.copyFileToAWS(self.machine_dns, self.json_file_name)
-        if not success:
-            print(f"Attempted to copy file {self.json_file_name} to {self.machine_dns} but got {success}")
+        return_code = util.copyFileToAWS(self.machine_dns, self.json_file_name)
+        if return_code > 0:
+            print(f"Attempted to copy file {self.json_file_name} to {self.machine_dns} but got {return_code}")
             return
 
         # Run the docker command
-        success = util.dockerRunCommand(self.machine_dns, self.json_file_name)
-        if not success:
-            print(
-                f"Attempted to run docker command on {self.json_file_name} on machine {self.machine_dns} but got {success}")
+        return_code, output_file = util.dockerRunCommand(self.machine_dns, self.json_file_name)
+        if return_code > 0:
+            print(f"Attempted to run docker command on {self.json_file_name} " +
+                  "on machine {self.machine_dns} but got {return_code}")
             return
+
+        # Get the output file
+        if output_file is not None and len(output_file) > 0:
+            return_code = util.copyFileFromAWS(self.machine_dns, self.output_file)
+            if not return_code:
+                print(f"Attempted to copy file {self.json_file_name} from {self.machine_dns} but got {return_code}")
+                return
 
         return

@@ -7,6 +7,18 @@ from pipeline.secrets import Secrets
 
 PEM_FILE = Secrets['PEM_FILE']
 DOCKER_IMAGE = Secrets['DOCKER_IMAGE']
+MACHINE_DNSes = Secrets['MACHINE_DNS']
+
+MACHINE_TYPE = "p2.xlarge"
+
+
+def getAllMachines():
+    """ Look on AWS and determine all the machines that we have running AWS that we can use.
+    The assumption is that we are looking for machines of type MACHINE_TYPE """
+
+    # TODO:  Make the AWS command line call to get the machines
+    machines = MACHINE_DNSes
+    return machines
 
 
 def getRemoteUser(machine_dns):
@@ -18,6 +30,8 @@ def runCommandAndCaptureOutput(commandList):
     process = subprocess.Popen(commandList,
                                stdout=subprocess.PIPE,
                                universal_newlines=True)
+
+    output_file = None
 
     while True:
         output = process.stdout.readline()
@@ -51,13 +65,21 @@ def dockerRunCommand(machine_dns, file_name):
                        "mcs_test.py", file_name]
     process_text = " ".join(process_command)
     print(f"Text looks like: {process_text}")
-    result, output_file = runCommandAndCaptureOutput(process_command)
-    return result
+    return_code, output_file = runCommandAndCaptureOutput(process_command)
+    return return_code, output_file
 
 
 def copyFileToAWS(machine_dns, file_name):
     ubuntu_machine_dns = getRemoteUser(machine_dns) + ":."
     print(f"Ubuntu command: {ubuntu_machine_dns}")
     process_command = ['scp', '-i', PEM_FILE, file_name, ubuntu_machine_dns]
-    result = runCommandAndCaptureOutput(process_command)
-    return result
+    return_code = runCommandAndCaptureOutput(process_command)
+    return return_code
+
+
+def copyFileFromAWS(machine_dns, file_name):
+    ubuntu_machine_dns = getRemoteUser(machine_dns) + ":" + file_name
+    print(f"Ubuntu command: {ubuntu_machine_dns}")
+    process_command = ['scp', '-i', PEM_FILE, ubuntu_machine_dns, "."]
+    return_code = runCommandAndCaptureOutput(process_command)
+    return return_code
