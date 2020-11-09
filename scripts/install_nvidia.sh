@@ -1,5 +1,7 @@
 #!/bin/bash
-nvidia_version=`cat /proc/driver/nvidia/version |grep 'NVRM version:'| grep -oE "Kernel Module\s+[0-9.]+"| awk {'print $3'}`
+# nvidia_version=`cat /proc/driver/nvidia/version |grep 'NVRM version:'| grep -oE "Kernel Module\s+[0-9.]+"| awk {'print $3'}`
+
+nvidia_version=450.80.02
 nvidia_major_version=`echo $nvidia_version |sed "s/\..*//"`
 driver_filename="NVIDIA-Linux-x86_64-$nvidia_version.run"
 driver_url="http://us.download.nvidia.com/XFree86/Linux-x86_64/$nvidia_version/$driver_filename"

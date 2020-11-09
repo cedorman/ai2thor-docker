@@ -11,7 +11,8 @@ WORKDIR $APP_HOME
 COPY scripts/install_nvidia.sh /app/
 RUN pip3 install --upgrade pip
 # RUN pip3 install -r requirements.txt && python3 -c "import ai2thor.controller; ai2thor.controller.Controller(download_only=True)"
-RUN NVIDIA_VERSION=$NVIDIA_VERSION /app/install_nvidia.sh
+# RUN NVIDIA_VERSION=$NVIDIA_VERSION /app/install_nvidia.sh
+RUN NVIDIA_VERSION=450.80.02 /app/install_nvidia.sh
 
 COPY ai2thor_docker /app/ai2thor_docker
 COPY example_agent.py ./

@@ -9,7 +9,8 @@ if  ! type "docker" 2> /dev/null > /dev/null ; then
     exit 1
 fi;
 
-NVIDIA_VERSION=`cat /proc/driver/nvidia/version | grep 'NVRM version:'| grep -oE "Kernel Module\s+[0-9.]+"| awk {'print $3'}` 
+# NVIDIA_VERSION=`cat /proc/driver/nvidia/version | grep 'NVRM version:'| grep -oE "Kernel Module\s+[0-9.]+"| awk {'print $3'}`
+NVIDIA_VERSION='450.80.02'
 NVIDIA_MAJOR=`echo $NVIDIA_VERSION | tr "." "\n" | head -1  | tr -d "\n"`
 NVIDIA_MINOR=`echo $NVIDIA_VERSION | tr "." "\n" | head -2  | tail -1| tr -d "\n"`
 
