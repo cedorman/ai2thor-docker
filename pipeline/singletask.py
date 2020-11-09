@@ -31,7 +31,7 @@ class SingleTask:
         return_code, output_file = util.dockerRunCommand(self.machine_dns, self.json_file_name)
         if return_code > 0:
             print(f"Attempted to run docker command on {self.json_file_name} " +
-                  "on machine {self.machine_dns} but got {return_code}")
+                  f"on machine {self.machine_dns} but got {return_code}")
             return
 
         # Get the output file

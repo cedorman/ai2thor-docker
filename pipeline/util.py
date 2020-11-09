@@ -1,5 +1,10 @@
 #
-#  Utilities, especially AWS utils
+#  Utilities, in particular AWS things
+#
+# NOTE:   Please set your ssh config to allow ssh commands without having accept the fingerprint.
+# To do that, add the following command to your ~/.ssh/config:     StrictHostKeyChecking accept-new
+#
+# See:  https://unix.stackexchange.com/questions/33271/how-to-avoid-ssh-asking-permission
 #
 import subprocess
 
@@ -7,7 +12,7 @@ from pipeline.secrets import Secrets
 
 PEM_FILE = Secrets['PEM_FILE']
 DOCKER_IMAGE = Secrets['DOCKER_IMAGE']
-MACHINE_DNSes = Secrets['MACHINE_DNS']
+MACHINE_DNSes = Secrets['MACHINE_DNSes']
 
 MACHINE_TYPE = "p2.xlarge"
 
@@ -73,7 +78,7 @@ def copyFileToAWS(machine_dns, file_name):
     ubuntu_machine_dns = getRemoteUser(machine_dns) + ":."
     print(f"Ubuntu command: {ubuntu_machine_dns}")
     process_command = ['scp', '-i', PEM_FILE, file_name, ubuntu_machine_dns]
-    return_code = runCommandAndCaptureOutput(process_command)
+    return_code, _ = runCommandAndCaptureOutput(process_command)
     return return_code
 
 
@@ -81,5 +86,5 @@ def copyFileFromAWS(machine_dns, file_name):
     ubuntu_machine_dns = getRemoteUser(machine_dns) + ":" + file_name
     print(f"Ubuntu command: {ubuntu_machine_dns}")
     process_command = ['scp', '-i', PEM_FILE, ubuntu_machine_dns, "."]
-    return_code = runCommandAndCaptureOutput(process_command)
+    return_code, _ = runCommandAndCaptureOutput(process_command)
     return return_code
