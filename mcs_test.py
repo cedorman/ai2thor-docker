@@ -7,7 +7,16 @@
 #
 import machine_common_sense as mcs
 from ai2thor_docker.x_server import startx
-import time 
+import time
+import sys
+
+# See if there was a file passed in
+arg_len = len(sys.argv)
+file_name = None
+if arg_len > 1:
+    file_name = sys.argv[1]
+    print(f"argument 1 is {file_name}")
+
 
 # This uses code from AI2THOR Docker that creates a xorg.conf based on the
 # current GPU and then starts a headless Xorg in a new thread.
@@ -44,3 +53,14 @@ for x in range(0, 10):
         print(f"Size of image list {len(image_list)}")
 
 controller.end_scene(None)
+
+# Produce something to send back
+if file_name:
+    output_filename = file_name + ".result"
+    with open(output_filename, "w") as output_file:
+        output_file.write("output\n")
+    print(f"OUTPUT_FILE: {output_filename}")
+
+
+
+
