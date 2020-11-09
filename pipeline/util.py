@@ -63,14 +63,25 @@ def dockerRunCommand(machine_dns, file_name):
     """ Running a command on a remote machine looks like :
             "ssh -i pem_file user@machine command"
         For ours, it looks like:
-            "ssh -i pem_file user@machine docker run dockerimage python3 ta1_code json_file"
+            "ssh -i pem_file user@machine docker run --privileged -v `pwd`:/data dockerimage python3 ta1_code /data/json_file"
+
+        We are using volume mapping to make the json file available to the docker, by mapping
+        the home directory on the instance to the /data directory in the docker.  That means that
+        the docker image will see the file as /data/filename.  Similarly, when the docker image
+        writes to the output (/data/outputfile), we will need to strip off the /data and get
+        outputfile from the instance.
     """
     username = getRemoteUser(machine_dns)
-    process_command = ["ssh", "-i", PEM_FILE, username, "docker", "run", "--privileged", DOCKER_IMAGE, "python3",
-                       "mcs_test.py", file_name]
+    mapped_dir = "/data/"
+    process_command = ["ssh", "-i", PEM_FILE, username, "docker", "run", "--privileged", "-v", f"`pwd`:{mapped_dir}",
+                       DOCKER_IMAGE, "python3", "mcs_test.py", mapped_dir + file_name]
     process_text = " ".join(process_command)
     print(f"Text looks like: {process_text}")
     return_code, output_file = runCommandAndCaptureOutput(process_command)
+
+    # Strip the mapped dir from the output file to get the name of the outputfile on the instance
+    if output_file is not None:
+        output_file = output_file.partition(mapped_dir)[2]
     return return_code, output_file
 
 
