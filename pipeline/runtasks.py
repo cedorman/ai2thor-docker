@@ -41,8 +41,8 @@ class RunTasks:
     def runTasks(self):
         global task_files
 
-        # Determine the DNS for all the machine that we have
-        self.available_machines = util.getAllMachines()
+        # Determine the DNS for all the machine that we have, default to us-east-1 and p2.xlarge
+        self.available_machines = util.getAWSMachines()
 
         # Get all the tasks files
         task_files = [path.abspath(join(TASK_FILE_PATH, f)) for f in listdir(TASK_FILE_PATH) if

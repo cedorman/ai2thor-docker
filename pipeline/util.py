@@ -1,34 +1,71 @@
 #
 #  Utilities, in particular AWS things
 #
-# NOTE:   Please set your ssh config to allow ssh commands without having accept the fingerprint.
+# NOTE:
+# 1.  Please set your ssh config to allow ssh commands without having accept the fingerprint.
 # To do that, add the following command to your ~/.ssh/config:     StrictHostKeyChecking accept-new
 #
 # See:  https://unix.stackexchange.com/questions/33271/how-to-avoid-ssh-asking-permission
 #
+# 2. Set your AWS credentials in ~/.aws/credentials.  This is needed to get the S3 buckets and
+# AWS machines to use
 import subprocess
+
+import boto3
 
 from pipeline.secrets import Secrets
 
 PEM_FILE = Secrets['PEM_FILE']
 DOCKER_IMAGE = Secrets['DOCKER_IMAGE']
-MACHINE_DNSes = Secrets['MACHINE_DNSes']
-
-MACHINE_TYPE = "p2.xlarge"
+USERNAME = Secrets['USERNAME']
 
 
-def getAllMachines():
+def getS3Buckets():
+    """ Look on AWS and get the list of buckets"""
+    buckets = []
+    s3 = boto3.resource('s3')
+    for bucket in s3.buckets.all():
+        buckets.append(bucket.name)
+    return buckets
+
+
+def getAWSMachines(machine_type='p2.xlarge', location='us-east-1'):
     """ Look on AWS and determine all the machines that we have running AWS that we can use.
-    The assumption is that we are looking for machines of type MACHINE_TYPE """
+    The assumption is that we are looking for machines of type machine_type.
 
-    # TODO:  Make the AWS command line call to get the machines
-    machines = MACHINE_DNSes
+    If you want to have all types or all locations, use '*'
+    """
+
+    machines = []
+
+    ec2 = boto3.client('ec2')
+    response = ec2.describe_instances()
+    reservations = response.get('Reservations')
+    for reservation in reservations:
+        instances = reservation.get('Instances')
+        for instance in instances:
+            instance_location = instance.get('Placement').get('AvailabilityZone')
+            instance_type = instance.get('InstanceType')
+            public_dns = instance.get('PublicDnsName')
+            instance_status = instance.get('State').get('Code')
+            # print(f"Machine:  {public_dns} {instance_location} {instance_type}")
+
+            # Status 16 means running.
+            if instance_status == 16:
+                # Do not look for an exact match for location, because the desired location could be
+                # us-east-1, but the actual location could be 'us-east-1b'.
+                if location == "*" or instance_location.find(location) > -1:
+                    if machine_type == "*" or instance_type == machine_type:
+                        machines.append(public_dns)
+
     return machines
 
 
 def getRemoteUser(machine_dns):
-    """ The name of the remote user depends on the type of machine that is running.  """
-    return f"ubuntu@{machine_dns}"
+    """ The name of the remote user depends on the type of machine that is running.
+    For ubuntu images, the username is 'ubuntu'.   For Amazon, it is 'ec2-user'
+    """
+    return f"{USERNAME}@{machine_dns}"
 
 
 def runCommandAndCaptureOutput(commandList):
@@ -50,7 +87,7 @@ def runCommandAndCaptureOutput(commandList):
                 output_file = split_stripped[1]
         return_code = process.poll()
         if return_code is not None:
-            print('RETURN CODE', return_code)
+            print('Return_code', return_code)
             # Process has finished, read rest of the output
             for output in process.stdout.readlines():
                 if len(output.strip()) > 0:
@@ -68,8 +105,8 @@ def dockerRunCommand(machine_dns, file_name):
         We are using volume mapping to make the json file available to the docker, by mapping
         the home directory on the instance to the /data directory in the docker.  That means that
         the docker image will see the file as /data/filename.  Similarly, when the docker image
-        writes to the output (/data/outputfile), we will need to strip off the /data and get
-        outputfile from the instance.
+        writes to the output (/data/output_file), we will need to strip off the /data and get
+        output_file from the instance.
     """
     username = getRemoteUser(machine_dns)
     mapped_dir = "/data/"
@@ -79,7 +116,7 @@ def dockerRunCommand(machine_dns, file_name):
     print(f"Text looks like: {process_text}")
     return_code, output_file = runCommandAndCaptureOutput(process_command)
 
-    # Strip the mapped dir from the output file to get the name of the outputfile on the instance
+    # Strip the mapped dir from the output file to get the name of the output file on the instance
     if output_file is not None:
         output_file = output_file.partition(mapped_dir)[2]
     return return_code, output_file
