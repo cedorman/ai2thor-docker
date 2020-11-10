@@ -17,15 +17,20 @@ class SingleTask:
         self.log = log
 
     def process(self):
+        head, tail = os.path.split(self.json_file_name_fullpath)
+        self.log.info(f"---- Starting task with json file: {tail}")
+
         # Make sure the file exists
         if not os.path.isfile(self.json_file_name_fullpath):
-            self.log.warn(f"File does not exist {self.json_file_name_fullpath}, trying to get to run on {self.machine_dns}")
+            self.log.warn(
+                f"File does not exist {self.json_file_name_fullpath}, trying to get to run on {self.machine_dns}")
             return
 
         # Copy the file to the machine
         return_code = util.copyFileToAWS(self.machine_dns, self.json_file_name_fullpath, self.log)
         if return_code > 0:
-            self.log.warn(f"Attempted to copy file {self.json_file_name_fullpath} to {self.machine_dns} but got {return_code}")
+            self.log.warn(
+                f"Attempted to copy file {self.json_file_name_fullpath} to {self.machine_dns} but got {return_code}")
             return
 
         # Run the docker command
@@ -46,4 +51,6 @@ class SingleTask:
         #         print(f"Attempted to copy file {self.json_file_name} from {self.machine_dns} but got {return_code}")
         #         return
 
-        return
+        self.log.info(f"---- Ended task with json file: {tail}  Return_code: {return_code}")
+
+        return return_code

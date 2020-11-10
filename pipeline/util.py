@@ -79,6 +79,7 @@ def getRemoteUser(machine_dns):
 def runCommandAndCaptureOutput(commandList, log=None):
     process = subprocess.Popen(commandList,
                                stdout=subprocess.PIPE,
+                               stderr=subprocess.STDOUT,
                                universal_newlines=True)
 
     output_file = None

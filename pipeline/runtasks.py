@@ -11,40 +11,44 @@ from pipeline.singletask import SingleTask
 
 TASK_FILE_PATH = "./taskfiles/"
 
-# Task files is a list of all the tasks that need to be done.  Note that it is global and shared by threads.
-task_files_full_path = []
-
-
-def runThreadOnMachine(machine_dns):
-    """ Function that runs on its own thread, with thread-local variable of the machine to use.  While
-    there are more task files to run, get one and run it, exiting the thread when there are no more tasks."""
-
-    dateStr = util.getDateInFileFormat()
-    threadlog = logger.configureLogging(machine_dns, dateStr+"."+machine_dns)
-
-    # Lock to be able to count tasks remaining and get one in a thread-safe way.  Otherwise, we could
-    # count tasks remaining and before we pop it, some other thread might pop it
-    lock = threading.RLock()
-    while True:
-        lock.acquire()
-        if len(task_files_full_path) == 0:
-            lock.release()
-            return
-        task_file = task_files_full_path.pop()
-        lock.release()
-
-        singleTask = SingleTask(machine_dns, task_file, threadlog)
-        singleTask.process()
-
 
 class RunTasks:
 
     def __init__(self):
+        self.available_machines = []
+        self.task_files_full_path = []
+
+        # Main Logger
         dateStr = util.getDateInFileFormat()
         self.log = logger.configureBaseLogging(dateStr + ".log")
-        self.log.info("Starting process")
+        self.log.info("Starting runtasks")
 
-        self.available_machines = []
+    def runThreadOnMachine(self, machine_dns):
+        """ Function that runs on its own thread, with thread-local variable of the machine to use.  While
+        there are more task files to run, get one and run it, exiting the thread when there are no more tasks."""
+
+        dateStr = util.getDateInFileFormat()
+        threadlog = logger.configureLogging(machine_dns, dateStr + "." + machine_dns)
+
+        # Lock to be able to count tasks remaining and get one in a thread-safe way.  Otherwise, we could
+        # count tasks remaining and before we pop it, some other thread might pop it
+        lock = threading.RLock()
+        while True:
+            lock.acquire()
+            if len(task_files_full_path) == 0:
+                lock.release()
+                return
+            task_file = task_files_full_path.pop()
+            lock.release()
+
+            singleTask = SingleTask(machine_dns, task_file, threadlog)
+            return_code = singleTask.process()
+
+            if return_code > 0:
+                lock.acquire()
+                self.log.warn(f"Task for file {task_file} failed.  Adding back to the queue")
+                task_files_full_path.push(task_file)
+                lock.release()
 
     def runTasks(self):
         global task_files_full_path
@@ -61,14 +65,15 @@ class RunTasks:
         # Create a thread for each machine
         threads = []
         for machine in self.available_machines:
-            processThread = threading.Thread(target=runThreadOnMachine, args=(machine,))
+            processThread = threading.Thread(target=self.runThreadOnMachine, args=(machine,))
             processThread.start()
             threads.append(processThread)
 
         # Wait for them all to finish
         for thread in threads:
             thread.join()
-        self.log.info("Done with all threads")
+
+        self.log.info("Ending runtasks")
 
 
 if __name__ == '__main__':
