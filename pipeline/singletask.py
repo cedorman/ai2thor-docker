@@ -24,21 +24,21 @@ class SingleTask:
         if not os.path.isfile(self.json_file_name_fullpath):
             self.log.warn(
                 f"File does not exist {self.json_file_name_fullpath}, trying to get to run on {self.machine_dns}")
-            return
+            return 2
 
         # Copy the file to the machine
         return_code = util.copyFileToAWS(self.machine_dns, self.json_file_name_fullpath, self.log)
         if return_code > 0:
             self.log.warn(
                 f"Attempted to copy file {self.json_file_name_fullpath} to {self.machine_dns} but got {return_code}")
-            return
+            return return_code
 
         # Run the docker command
         return_code, output_file = util.dockerRunCommand(self.machine_dns, self.json_file_name_fullpath, self.log)
         if return_code > 0:
             self.log.warn(f"Attempted to run docker command on {self.json_file_name_fullpath} " +
                           f"on machine {self.machine_dns} but got {return_code}")
-            return
+            return return_code
 
         # Get the output file
         # NOTE:  The current situation is that an output file is not being used.  Instead, the

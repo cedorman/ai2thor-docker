@@ -9,6 +9,7 @@
 #
 # 2. Set your AWS credentials in ~/.aws/credentials.  This is needed to get the S3 buckets and
 # AWS machines to use
+import os
 import subprocess
 import time
 from os import path
@@ -71,7 +72,7 @@ def getAWSMachines(machine_type='p2.xlarge', location='us-east-1'):
 
 def getRemoteUser(machine_dns):
     """ The name of the remote user depends on the type of machine that is running.
-    For ubuntu images, the username is 'ubuntu'.   For Amazon, it is 'ec2-user'
+    For ubuntu images, the username is 'ubuntu'. For Amazon, it is 'ec2-user'
     """
     return f"{USERNAME}@{machine_dns}"
 
@@ -112,7 +113,7 @@ def runCommandAndCaptureOutput(commandList, log=None):
     return return_code, output_file
 
 
-def dockerRunCommand(machine_dns, file_name, log=None):
+def dockerRunCommand(machine_dns, json_file_name_fullpath, log=None):
     """ Running a command on a remote machine looks like :
             "ssh -i pem_file user@machine command"
         For ours, it looks like:
@@ -125,12 +126,12 @@ def dockerRunCommand(machine_dns, file_name, log=None):
         output_file from the instance.
     """
     username = getRemoteUser(machine_dns)
+
+    head, tail = os.path.split(json_file_name_fullpath)
     mapped_dir = "/data/"
+    file_name_in_docker = mapped_dir + tail
     process_command = ["ssh", "-i", PEM_FILE, username, "docker", "run", "--privileged", "-v", f"`pwd`:{mapped_dir}",
-                       DOCKER_IMAGE, "python3", "mcs_test.py", mapped_dir + file_name]
-    process_text = " ".join(process_command)
-    if log:
-        log.info(f"Text looks like: {process_text}")
+                       DOCKER_IMAGE, "python3", "mcs_test.py", file_name_in_docker]
     return_code, output_file = runCommandAndCaptureOutput(process_command, log)
 
     # Strip the mapped dir from the output file to get the name of the output file on the instance
