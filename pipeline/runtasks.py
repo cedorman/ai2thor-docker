@@ -47,7 +47,7 @@ class RunTasks:
             if return_code > 0:
                 lock.acquire()
                 self.log.warn(f"Task for file {task_file} failed.  Adding back to the queue")
-                task_files_full_path.push(task_file)
+                task_files_full_path.append(task_file)
                 lock.release()
 
     def runTasks(self):
