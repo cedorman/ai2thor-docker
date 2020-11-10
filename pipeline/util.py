@@ -10,6 +10,8 @@
 # 2. Set your AWS credentials in ~/.aws/credentials.  This is needed to get the S3 buckets and
 # AWS machines to use
 import subprocess
+import time
+from os import path
 
 import boto3
 
@@ -18,6 +20,12 @@ from pipeline.secrets import Secrets
 PEM_FILE = Secrets['PEM_FILE']
 DOCKER_IMAGE = Secrets['DOCKER_IMAGE']
 USERNAME = Secrets['USERNAME']
+
+
+def getDateInFileFormat():
+    """Get the date in a format like 2020-03-01, useful for creating files"""
+    timeInFileFormat = time.strftime('%Y-%m-%d', time.localtime(time.time()))
+    return timeInFileFormat
 
 
 def getS3Buckets():
@@ -68,18 +76,22 @@ def getRemoteUser(machine_dns):
     return f"{USERNAME}@{machine_dns}"
 
 
-def runCommandAndCaptureOutput(commandList):
+def runCommandAndCaptureOutput(commandList, log=None):
     process = subprocess.Popen(commandList,
                                stdout=subprocess.PIPE,
                                universal_newlines=True)
 
     output_file = None
 
+    if log:
+        log.info(f"Sending the following command: {commandList}")
+
     while True:
         output = process.stdout.readline()
         stripped = output.strip()
         if len(stripped) > 0:
-            print("Output: ", stripped)
+            if log:
+                log.info(f"Output: {stripped}")
         output_file_index = stripped.find("OUTPUT_FILE:")
         if output_file_index > 0:
             split_stripped = stripped.split(" ")
@@ -87,16 +99,19 @@ def runCommandAndCaptureOutput(commandList):
                 output_file = split_stripped[1]
         return_code = process.poll()
         if return_code is not None:
-            print('Return_code', return_code)
+            if log:
+                log.info(f"Return_code {return_code}")
             # Process has finished, read rest of the output
             for output in process.stdout.readlines():
-                if len(output.strip()) > 0:
-                    print("Output: ", output.strip())
+                output = output.strip()
+                if len(output) > 0:
+                    if log:
+                        log.info(f"Output: {output}")
             break
     return return_code, output_file
 
 
-def dockerRunCommand(machine_dns, file_name):
+def dockerRunCommand(machine_dns, file_name, log=None):
     """ Running a command on a remote machine looks like :
             "ssh -i pem_file user@machine command"
         For ours, it looks like:
@@ -113,8 +128,9 @@ def dockerRunCommand(machine_dns, file_name):
     process_command = ["ssh", "-i", PEM_FILE, username, "docker", "run", "--privileged", "-v", f"`pwd`:{mapped_dir}",
                        DOCKER_IMAGE, "python3", "mcs_test.py", mapped_dir + file_name]
     process_text = " ".join(process_command)
-    print(f"Text looks like: {process_text}")
-    return_code, output_file = runCommandAndCaptureOutput(process_command)
+    if log:
+        log.info(f"Text looks like: {process_text}")
+    return_code, output_file = runCommandAndCaptureOutput(process_command, log)
 
     # Strip the mapped dir from the output file to get the name of the output file on the instance
     if output_file is not None:
@@ -122,17 +138,18 @@ def dockerRunCommand(machine_dns, file_name):
     return return_code, output_file
 
 
-def copyFileToAWS(machine_dns, file_name):
-    ubuntu_machine_dns = getRemoteUser(machine_dns) + ":."
-    print(f"Ubuntu command: {ubuntu_machine_dns}")
-    process_command = ['scp', '-i', PEM_FILE, file_name, ubuntu_machine_dns]
-    return_code, _ = runCommandAndCaptureOutput(process_command)
+def copyFileToAWS(machine_dns, file_name_fullpath, log=None):
+    head, tail = path.split(file_name_fullpath)
+    ubuntu_machine_dns = getRemoteUser(machine_dns) + ":" + tail
+    process_command = ['scp', '-i', PEM_FILE, file_name_fullpath, ubuntu_machine_dns]
+    return_code, _ = runCommandAndCaptureOutput(process_command, log)
     return return_code
 
 
-def copyFileFromAWS(machine_dns, file_name):
+def copyFileFromAWS(machine_dns, file_name, log=None):
     ubuntu_machine_dns = getRemoteUser(machine_dns) + ":" + file_name
-    print(f"Ubuntu command: {ubuntu_machine_dns}")
+    if log:
+        log.info(f"Ubuntu command: {ubuntu_machine_dns}")
     process_command = ['scp', '-i', PEM_FILE, ubuntu_machine_dns, "."]
-    return_code, _ = runCommandAndCaptureOutput(process_command)
+    return_code, _ = runCommandAndCaptureOutput(process_command, log)
     return return_code

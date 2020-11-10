@@ -8,30 +8,31 @@ from pipeline import util
 
 class SingleTask:
 
-    def __init__(self, machine_dns, json_file_name):
+    def __init__(self, machine_dns, json_file_name_fullpath, log):
         """  Passed a p2.xlarge machine name on AWS and a json file,
         this runs a job on AWS."""
 
         self.machine_dns = machine_dns
-        self.json_file_name = json_file_name
+        self.json_file_name_fullpath = json_file_name_fullpath
+        self.log = log
 
     def process(self):
         # Make sure the file exists
-        if not os.path.isfile(self.json_file_name):
-            print(f"File does not exist {self.json_file_name}, trying to get to run on {self.machine_dns}")
+        if not os.path.isfile(self.json_file_name_fullpath):
+            self.log.warn(f"File does not exist {self.json_file_name_fullpath}, trying to get to run on {self.machine_dns}")
             return
 
         # Copy the file to the machine
-        return_code = util.copyFileToAWS(self.machine_dns, self.json_file_name)
+        return_code = util.copyFileToAWS(self.machine_dns, self.json_file_name_fullpath, self.log)
         if return_code > 0:
-            print(f"Attempted to copy file {self.json_file_name} to {self.machine_dns} but got {return_code}")
+            self.log.warn(f"Attempted to copy file {self.json_file_name_fullpath} to {self.machine_dns} but got {return_code}")
             return
 
         # Run the docker command
-        return_code, output_file = util.dockerRunCommand(self.machine_dns, self.json_file_name)
+        return_code, output_file = util.dockerRunCommand(self.machine_dns, self.json_file_name_fullpath, self.log)
         if return_code > 0:
-            print(f"Attempted to run docker command on {self.json_file_name} " +
-                  f"on machine {self.machine_dns} but got {return_code}")
+            self.log.warn(f"Attempted to run docker command on {self.json_file_name_fullpath} " +
+                          f"on machine {self.machine_dns} but got {return_code}")
             return
 
         # Get the output file
