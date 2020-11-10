@@ -35,10 +35,14 @@ class SingleTask:
             return
 
         # Get the output file
-        if output_file is not None and len(output_file) > 0:
-            return_code = util.copyFileFromAWS(self.machine_dns, self.output_file)
-            if not return_code:
-                print(f"Attempted to copy file {self.json_file_name} from {self.machine_dns} but got {return_code}")
-                return
+        # NOTE:  The current situation is that an output file is not being used.  Instead, the
+        # container copies the file to S3.
+        #
+        # print(f"Outputfile : {output_file}")
+        # if output_file is not None and len(output_file) > 0:
+        #     return_code = util.copyFileFromAWS(self.machine_dns, self.output_file)
+        #     if not return_code:
+        #         print(f"Attempted to copy file {self.json_file_name} from {self.machine_dns} but got {return_code}")
+        #         return
 
         return
