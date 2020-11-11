@@ -3,7 +3,7 @@
 # 
 FROM ai2thor-docker:latest
 
-ARG mcsversion=0.3.1
+ARG mcsversion=0.3.3
 
 WORKDIR /mcs
 
