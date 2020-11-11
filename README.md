@@ -1,8 +1,3 @@
-<p align="center">
-  <img width = "50%" src='/doc/static/thor-logo-main_1.0_thick.png' />
-  </p>
-
---------------------------------------------------------------------------------
 
 # MCS Version of AI2-THOR Docker
 
@@ -17,6 +12,19 @@ self-contained.
 We thank the AI2-THOR project for their hard work and their generous
 contribution of code.
 
+## Pipeline
+
+Here is an image of what the pipeline looks like:
+
+<p align="center">
+  <img width = "50%" src='/doc/static/thor-logo-main_1.0_thick.png' />
+</p>
+
+The pipeline consists of a number of docker containes on the left.
+See building below.  
+
+
+--------------------------------------------------------------------------------
 ## Building ##
 
 On AWS, make an instance:  Deep Learning AMI (Ubuntu 18.04) Version 35.0 - ami-01aad86525617098d  with p2.xlarge
@@ -36,7 +44,9 @@ This will create a docker image that looks like the following:
 REPOSITORY                                                        TAG                      IMAGE ID            CREATED             SIZE
 mcs-ai2thor-docker                                                latest                   876e6b8ffbc5        8 hours ago         8.52GB
    ```
-   
+
+## Running Locally ## 
+
 To run it: 
 
    ```
@@ -90,6 +100,10 @@ Note:  In the mcs_test.py, there is a line:   startx()  that calls the AI2-Thor 
 The following is from the original README.md
 
 
+
+<p align="center">
+  <img width = "50%" src='/doc/static/thor-logo-main_1.0_thick.png' />
+</p>
 
 
 # AI2-THOR Docker
