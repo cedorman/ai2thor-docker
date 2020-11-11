@@ -26,10 +26,10 @@ print(" Now going to sleep for 10 seconds ", flush=True)
 time.sleep(10)
 
 directory = "/mcs/"
-unity_app_file_path = directory + "MCS-AI2-THOR-Unity-App-v0.3.1.x86_64"
+unity_app_file_path = directory + "MCS-AI2-THOR-Unity-App-v0.3.3.x86_64"
 config_json_file_path = directory + "retrieval_goal-0005.json"
 
-controller = mcs.create_controller(unity_app_file_path, depth_masks=True, object_masks=True)
+controller = mcs.create_controller(unity_app_file_path) # , depth_masks=True, object_masks=True)
 
 if controller is None:
     print("Controller is NONE. Problem initializaing AI2-THOR !!!")
