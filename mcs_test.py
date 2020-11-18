@@ -17,13 +17,15 @@ if arg_len > 1:
     file_name = sys.argv[1]
     print(f"argument 1 is {file_name}")
 
-
-# This uses code from AI2THOR Docker that creates a xorg.conf based on the
-# current GPU and then starts a headless Xorg in a new thread.
-startx()
-
-print(" Now going to sleep for 10 seconds ", flush=True)
-time.sleep(10)
+#  -----------------------------------------
+# Moved to an entirely different program
+# ------------------------------------------
+# # This uses code from AI2THOR Docker that creates a xorg.conf based on the
+# # current GPU and then starts a headless Xorg in a new thread.
+# startx()
+#
+# print(" Now going to sleep for 10 seconds ", flush=True)
+# time.sleep(10)
 
 directory = "/mcs/"
 unity_app_file_path = directory + "MCS-AI2-THOR-Unity-App-v0.3.3.x86_64"

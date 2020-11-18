@@ -10,6 +10,7 @@ ADD run.sh /mcs
 COPY ai2thor_docker /mcs/ai2thor_docker
 ADD mcs_test.py /mcs
 ADD retrieval_goal-0005.json /mcs
+ADD run_startx.py /mcs
 
 
 
