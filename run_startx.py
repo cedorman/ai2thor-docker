@@ -15,11 +15,6 @@ import sys
 # current GPU and then starts a headless Xorg in a new thread.
 startx()
 
-print(" Now going to sleep for 10 seconds ", flush=True)
-time.sleep(10)
-
-print(" Back from sleep ", flush=True)
-
-
+print(" Now going to sleep", flush=True)
 while True:
     time.sleep(1)
