@@ -1,20 +1,7 @@
-FROM gen-pram-combined:latest
-
-# --------------------------------------------------
-# this doesn't really do what you wouild want it to.
-# when you run the dockerfile for real, you haver to do this again.
-# instead, you should start it up, run the command below, then do a
-# snapshot using 'docker commit <container> combined-postinstall
-# --------------------------------------------------
-# RUN "source /opt/ros/noetic/setup.bash && cd /root/.julia/dev/GenGridSLAM && \
-#             julia -e 'import Pkg; Pkg.update(); Pkg.instantiate()' && cd ../GenAgent/ && \
-#             julia -e 'import Pkg; Pkg.update(); Pkg.instantiate(); Pkg.add([\"PyCall\", \"Revise\", \"RobotOS\"]); \
-#             Pkg.develop(\"GenGridSLAM\"); Pkg.develop(\"GenAgent\"); Pkg.build(); Pkg.API.precompile()'
+FROM gen-pram-combined2:latest
 
 # The base image for mit does not have all the pci and X11 stuff we need
 RUN apt update && apt install -y xauth xorg pciutils vim
-
-RUN ls /
 
 # WORKDIR will create /mcs if it does not exist
 WORKDIR /mcs
@@ -25,6 +12,7 @@ RUN NVIDIA_VERSION=450.80.02 /mcs/install_nvidia.sh
 
 # Put our special X11 stuff in /mcs.  
 ADD run_startx.py /mcs
+
 # This has x_server.py in it
 COPY ai2thor_docker /mcs/ai2thor_docker
 
