@@ -21,7 +21,7 @@ COPY ai2thor_docker /mcs/ai2thor_docker
 ADD retrieval_goal-0005.json /mcs
 
 # This will install the julia dependencies
-ADD mit/run_install_julia_dep.sh /
+# ADD mit/run_install_julia_dep.sh /
 
-RUN chmod +x /run_install_julia_dep.sh
+# RUN chmod +x /run_install_julia_dep.sh
 

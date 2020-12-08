@@ -4,4 +4,7 @@ set -x
 
 cd ..
 
-docker build --no-cache --progress plain -f mit/combined_withjulia.dockerfile -t combined_withjulia:latest .
+# Add --no-cache to make it start from scratch
+# docker build --no-cache --progress plain -f mit/combined_withjulia.dockerfile -t combined_withjulia:latest .
+
+docker build -f mit/combined_withjulia.dockerfile -t combined_withjulia:latest .
