@@ -8,3 +8,7 @@ cd ..
 # docker build --no-cache --progress plain -f mit/combined_withjulia.dockerfile -t combined_withjulia:latest .
 
 time docker build -f mit/combined_withjulia.dockerfile -t combined_withjulia:latest .
+
+docker login --username=cedorman
+docker tag combined_withjulia:latest cedorman/combined_withjulia:latest
+docker push cedorman/combined_withjulia:latest

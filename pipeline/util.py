@@ -70,7 +70,7 @@ def getAWSMachines(machine_type='p2.xlarge', location='us-east-1'):
     return machines
 
 
-def getRemoteUser(machine_dns):
+def getRemoteUserInfo(machine_dns):
     """ The name of the remote user depends on the type of machine that is running.
     For ubuntu images, the username is 'ubuntu'. For Amazon, it is 'ec2-user'
     """
@@ -125,12 +125,12 @@ def dockerRunCommand(machine_dns, json_file_name_fullpath, log=None):
         writes to the output (/data/output_file), we will need to strip off the /data and get
         output_file from the instance.
     """
-    username = getRemoteUser(machine_dns)
+    userInfo = getRemoteUserInfo(machine_dns)
 
     head, tail = os.path.split(json_file_name_fullpath)
     mapped_dir = "/data/"
     file_name_in_docker = mapped_dir + tail
-    process_command = ["ssh", "-i", PEM_FILE, username, "docker", "run", "--privileged", "-v", f"`pwd`:{mapped_dir}",
+    process_command = ["ssh", "-i", PEM_FILE, userInfo, "docker", "run", "--privileged", "-v", f"`pwd`:{mapped_dir}",
                        DOCKER_IMAGE, "python3", "mcs_test.py", file_name_in_docker]
     return_code, output_file = runCommandAndCaptureOutput(process_command, log)
 
@@ -142,14 +142,14 @@ def dockerRunCommand(machine_dns, json_file_name_fullpath, log=None):
 
 def copyFileToAWS(machine_dns, file_name_fullpath, log=None):
     head, tail = path.split(file_name_fullpath)
-    ubuntu_machine_dns = getRemoteUser(machine_dns) + ":" + tail
+    ubuntu_machine_dns = getRemoteUserInfo(machine_dns) + ":" + tail
     process_command = ['scp', '-i', PEM_FILE, file_name_fullpath, ubuntu_machine_dns]
     return_code, _ = runCommandAndCaptureOutput(process_command, log)
     return return_code
 
 
 def copyFileFromAWS(machine_dns, file_name, log=None):
-    ubuntu_machine_dns = getRemoteUser(machine_dns) + ":" + file_name
+    ubuntu_machine_dns = getRemoteUserInfo(machine_dns) + ":" + file_name
     if log:
         log.info(f"Ubuntu command: {ubuntu_machine_dns}")
     process_command = ['scp', '-i', PEM_FILE, ubuntu_machine_dns, "."]

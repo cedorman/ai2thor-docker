@@ -62,15 +62,26 @@ fake display.
   - docker tag combined_withjulia:latest cedorman/combined_withjulia:latest
   - docker push cedorman/combined_withjulia:latest
   
-- Start ec2 machine and image and run it
+- Start EC2 machine, copy over json, log in, get docker image, and run it
 
   - Deep Learning AMI (Ubuntu 18.04) Version 37.0
   - p2.xlarge machine 
+  - scp -i ~/.ssh/clarkdorman-keypair.pem retrieval_goal-0005.json ubuntu@ec2-54-237-119-122.compute-1.amazonaws.com:.
   - ssh -i ~/.ssh/clarkdorman-keypair.pem ubuntu@ec2-54-237-119-122.compute-1.amazonaws.com
+  - cd  (make sure in home)
+  - mkdir input 
+  - mkdir debug
+  - cp retrieval_goal-0005.json input/
   - docker pull cedorman/combined_withjulia:latest
-  - docker run --rm --privileged -it b93d8fd63732 /bin/bash
+  - docker run --rm --privileged -v input:/input -v debug:/debug -it cedorman/combined_withjulia:latest /bin/bash
 
-- In the image, start the xserver
+- In the image, start the xserver and then run 
 
+  - cd /mcs
+  - python3 run_startx.py &
+  - cd /root/.julia/dev/GenPRAM.jl/agent_experiments/
+  - julia container_execution.jl
   
+
+
 
