@@ -1,4 +1,4 @@
-FROM gen-pram-combined2:latest
+FROM gen-pram-combined:latest
 
 # The base image for mit does not have all the pci and X11 stuff we need
 RUN apt update && apt install -y xauth xorg pciutils vim
