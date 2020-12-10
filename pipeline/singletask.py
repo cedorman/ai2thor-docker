@@ -8,25 +8,26 @@ from pipeline import util
 
 class SingleTask:
 
-    def __init__(self, machine_dns, json_file_name_fullpath, log):
+    def __init__(self, machine_dns, json_file_name_fullpath, log, definition):
         """  Passed a p2.xlarge machine name on AWS and a json file,
         this runs a job on AWS."""
 
         self.machine_dns = machine_dns
         self.json_file_name_fullpath = json_file_name_fullpath
         self.log = log
+        self.taskdefinition = definition
 
     def process(self):
         head, tail = os.path.split(self.json_file_name_fullpath)
         self.log.info(f"---- Starting task with json file: {tail}")
 
-        # Make sure the file exists
+        # Make sure the file exists locally
         if not os.path.isfile(self.json_file_name_fullpath):
             self.log.warn(
                 f"File does not exist {self.json_file_name_fullpath}, trying to get to run on {self.machine_dns}")
             return 2
 
-        # Copy the file to the machine
+        # Copy the file to the machine; this puts it in the home directory
         return_code = util.copyFileToAWS(self.machine_dns, self.json_file_name_fullpath, self.log)
         if return_code > 0:
             self.log.warn(
@@ -34,7 +35,8 @@ class SingleTask:
             return return_code
 
         # Run the docker command
-        return_code, output_file = util.dockerRunCommand(self.machine_dns, self.json_file_name_fullpath, self.log)
+        return_code, output_file = util.dockerRunCommand(self.machine_dns, self.json_file_name_fullpath,
+                                                         self.taskdefinition.process_command, self.log)
         if return_code > 0:
             self.log.warn(f"Attempted to run docker command on {self.json_file_name_fullpath} " +
                           f"on machine {self.machine_dns} but got {return_code}")

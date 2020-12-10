@@ -10,7 +10,7 @@ from pipeline import util
 from pipeline.singletask import SingleTask
 
 TASK_FILE_PATH = "./taskfiles/"
-
+from pipeline.taskdefinition import MITTaskDefinition
 
 class RunTasks:
 
@@ -22,6 +22,7 @@ class RunTasks:
         dateStr = util.getDateInFileFormat()
         self.log = logger.configureBaseLogging(dateStr + ".log")
         self.log.info("Starting runtasks")
+        self.definition = MITTaskDefinition()
 
     def runThreadOnMachine(self, machine_dns):
         """ Function that runs on its own thread, with thread-local variable of the machine to use.  While
@@ -41,7 +42,7 @@ class RunTasks:
             task_file = task_files_full_path.pop()
             lock.release()
 
-            singleTask = SingleTask(machine_dns, task_file, threadlog)
+            singleTask = SingleTask(machine_dns, task_file, threadlog, self.definition)
             return_code = singleTask.process()
 
             if return_code > 0:

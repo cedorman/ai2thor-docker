@@ -15,8 +15,6 @@
 export MCS_CONFIG_FILE=${MCS_CONFIG_FILE:-"/mcs_config_level1.yaml"}
 echo "Config file " ${MCS_CONFIG_FILE}
 
-BLAH=3
-
 set +x
 
 docker run --rm --privileged \

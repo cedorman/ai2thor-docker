@@ -19,9 +19,7 @@ import boto3
 from pipeline.secrets import Secrets
 
 PEM_FILE = Secrets['PEM_FILE']
-DOCKER_IMAGE = Secrets['DOCKER_IMAGE']
 USERNAME = Secrets['USERNAME']
-
 
 def getDateInFileFormat():
     """Get the date in a format like 2020-03-01, useful for creating files"""
@@ -113,7 +111,7 @@ def runCommandAndCaptureOutput(commandList, log=None):
     return return_code, output_file
 
 
-def dockerRunCommand(machine_dns, json_file_name_fullpath, log=None):
+def dockerRunCommand(machine_dns, json_file_name_fullpath, command, log=None):
     """ Running a command on a remote machine looks like :
             "ssh -i pem_file user@machine command"
         For ours, it looks like:
@@ -130,8 +128,7 @@ def dockerRunCommand(machine_dns, json_file_name_fullpath, log=None):
     head, tail = os.path.split(json_file_name_fullpath)
     mapped_dir = "/data/"
     file_name_in_docker = mapped_dir + tail
-    process_command = ["ssh", "-i", PEM_FILE, userInfo, "docker", "run", "--privileged", "-v", f"`pwd`:{mapped_dir}",
-                       DOCKER_IMAGE, "python3", "mcs_test.py", file_name_in_docker]
+    process_command = ["ssh", "-i", PEM_FILE, userInfo] + command
     return_code, output_file = runCommandAndCaptureOutput(process_command, log)
 
     # Strip the mapped dir from the output file to get the name of the output file on the instance

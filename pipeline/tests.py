@@ -53,6 +53,10 @@ def test_getAWSMachines():
     print(f"All Current Machines:")
     print(json.dumps(machines, indent=4, default=str))
 
+    machines = util.getAWSMachines(machine_type='p2.xlarge', location='*')
+    print(f"p2.xlarge Current Machines:")
+    print(json.dumps(machines, indent=4, default=str))
+
 
 # test_copyFileToAWS()
 # test_copyFileFromAWS()
