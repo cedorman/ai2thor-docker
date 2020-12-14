@@ -20,5 +20,9 @@ time docker run --rm -e PYTHONIOENCODING=utf8 -e XAUTHORITY=/tmp/.docker.xauth -
 
 # time docker run -it -e PYTHONIOENCODING=utf8 -e XAUTHORITY=/tmp/.docker.xauth -e DISPLAY=:1 -v /home/ced/work/mcs/docker/ai2thor-docker-cedorman/mit/input:/input -v /home/ced/work/mcs/docker/ai2thor-docker-cedorman/mit/debug:/debug -v /tmp/.X11-unix:/tmp/.X11-unix -v /tmp/.docker.xauth:/tmp/.docker.xauth --net host --gpus all --rm combined_withjulia:latest /bin/bash
 
-#             cd /root/.julia/dev/GenPRAM.jl/agent_experiments/
-#            julia container_execution.jl"
+
+
+# time docker run -it -e PYTHONIOENCODING=utf8 -e XAUTHORITY=/tmp/.docker.xauth -e DISPLAY=:1 -v /home/ced/work/mcs/docker/ai2thor-docker-cedorman/mit/input:/input -v /home/ced/work/mcs/docker/ai2thor-docker-cedorman/mit/debug:/debug -v /tmp/.X11-unix:/tmp/.X11-unix -v /tmp/.docker.xauth:/tmp/.docker.xauth --net host --gpus all --rm gen-pram-combined_3.5:latest /bin/bash
+
+#            cd /root/.julia/dev/GenPRAM.jl/agent_experiments/
+#            julia container_execution.jl
