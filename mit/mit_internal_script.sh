@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Command to be run in the container on the EC2 machine
+# Command to be run in the container on the EC2 machine.  Does not change. 
 
 cd /mcs
 
