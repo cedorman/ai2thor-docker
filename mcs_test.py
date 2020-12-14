@@ -27,9 +27,14 @@ if arg_len > 1:
 # print(" Now going to sleep for 10 seconds ", flush=True)
 # time.sleep(10)
 
-directory = "/mcs/"
-unity_app_file_path = directory + "MCS-AI2-THOR-Unity-App-v0.3.3.x86_64"
-config_json_file_path = directory + "retrieval_goal-0005.json"
+
+
+directory = "/home/ced/work/mcs/eval3/mit/dev/"
+# directory = "/home/ced/work/mcs/eval3/opics/mcs_eval3/unity_app/"
+# directory = "/mcs/"
+unity_app_file_path = directory + "MCS-AI2-THOR-Unity-App-v0.3.6.x86_64"
+# config_json_file_path = "/home/ced/work/mcs/docker/ai2thor-docker-cedorman/retrieval_goal-0005.json"
+config_json_file_path = "/home/ced/work/mcs/docker/ai2thor-docker-cedorman/interactive_obstacle_1_2.json"
 
 controller = mcs.create_controller(unity_app_file_path) # , depth_masks=True, object_masks=True)
 
@@ -44,15 +49,14 @@ action = 'MoveAhead'
 
 for x in range(0, 10):
     step_output = controller.step(action)
-    image_list = step_output.image_list
-
-    if len(image_list) == 1:
-        image = image_list[0]
-        filename = directory + "output_image_" + str(x) + ".jpg"
-        image.save(filename)
-        print(f"Image saved to {filename}")
-    else:
-        print(f"Size of image list {len(image_list)}")
+    # image_list = step_output.image_list
+    # if len(image_list) == 1:
+    #     image = image_list[0]
+    #     filename = directory + "output_image_" + str(x) + ".jpg"
+    #     image.save(filename)
+    #     print(f"Image saved to {filename}")
+    # else:
+    #     print(f"Size of image list {len(image_list)}")
 
 controller.end_scene(None)
 
