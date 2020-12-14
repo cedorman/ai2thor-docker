@@ -23,5 +23,6 @@ docker run --rm --privileged \
        -v /home/ubuntu/input:/input \
        -v /home/ubuntu/debug:/debug \
        cedorman/combined_withjulia:latest \
-       /run/internal_script.sh
+       /run/mit_internal_script.sh
+
 
