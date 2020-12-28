@@ -13,13 +13,13 @@ time docker run --rm -e PYTHONIOENCODING=utf8 -e XAUTHORITY=/tmp/.docker.xauth -
            -v "${GEN_AGENT_DEBUG_OUTPUT_PATH}":/debug \
            -v /tmp/.X11-unix:/tmp/.X11-unix \
            -v /tmp/.docker.xauth:/tmp/.docker.xauth \
-           --net host --gpus all --rm mit_with_xserver:latest bash -c \
+           --net host --gpus all --rm mit_with_xserver_3.6:latest bash -c \
             "cd /root/.julia/dev/GenPRAM.jl/agent_experiments/ && \
             julia container_execution.jl"
 
+#
 
-
-# time docker run -it -e PYTHONIOENCODING=utf8 -e XAUTHORITY=/tmp/.docker.xauth -e DISPLAY=:1 -v /home/ced/work/mcs/docker/ai2thor-docker-cedorman/mit/input:/input -v /home/ced/work/mcs/docker/ai2thor-docker-cedorman/mit/debug:/debug -v /tmp/.X11-unix:/tmp/.X11-unix -v /tmp/.docker.xauth:/tmp/.docker.xauth --net host --gpus all --rm mit_with_xserver:latest /bin/bash
+# time docker run -it -e PYTHONIOENCODING=utf8 -e XAUTHORITY=/tmp/.docker.xauth -e DISPLAY=:1 -v /home/ced/work/mcs/docker/ai2thor-docker-cedorman/mit/input:/input -v /home/ced/work/mcs/docker/ai2thor-docker-cedorman/mit/debug:/debug -v /tmp/.X11-unix:/tmp/.X11-unix -v /tmp/.docker.xauth:/tmp/.docker.xauth --net host --gpus all --rm gen-pram-combined_3.5_patched:latest /bin/bash
 
 # cd /root/.julia/dev/GenPRAM.jl/agent_experiments/
 # julia container_execution.jl
