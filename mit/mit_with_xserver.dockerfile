@@ -1,6 +1,5 @@
-# This is 0.3.6, we need 0.3.5 for right now
 # FROM gen-pram-combined:latest
-FROM gen-pram-combined_3.5:latest
+FROM gen-pram-combined_3.6:latest
 
 
 
@@ -40,6 +39,6 @@ ENV MCS_CONFIG_FILE_PATH /mcs_config.yaml
 # julia: symbol lookup error: /root/.julia/artifacts/e6e5f41352118bbeb44677765ebccab8c151c72a/lib/libssl.so: undefined symbol: EVP_idea_cbc, version OPENSSL_1_1_0
 # So, copy from regular libs
 # ------------------------------
-RUN apt install libssl-dev && cp /usr/lib/x86_64-linux-gnu/* /root/.julia/artifacts/e6e5f41352118bbeb44677765ebccab8c151c72a/lib/
+# RUN apt install libssl-dev && cp /usr/lib/x86_64-linux-gnu/* /root/.julia/artifacts/e6e5f41352118bbeb44677765ebccab8c151c72a/lib/
 
 

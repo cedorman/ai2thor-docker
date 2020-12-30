@@ -193,3 +193,13 @@ if __name__ == '__main__':
 
 ```
 
+
+Running manually
+
+docker run -it --rm --privileged mcs-ai2thor-docker:latest /bin/bash
+cd /mcs
+python3 run_startx.py &
+python3 mcs_test.py
+
+
+
