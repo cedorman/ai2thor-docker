@@ -12,3 +12,8 @@ time docker build -f mit/mit_with_xserver.dockerfile -t mit_with_xserver_3.7_fix
 # docker tag mit_with_xserver:latest cedorman/mcs-mit-eval3:latest
 # docker push cedorman/mcs-mit-eval3:latest
 
+# Instructions to push to dockerhub:
+# docker login --username=cedorman
+# docker tag mit_with_xserver_3.7_fixed:latest cedorman/combined_withjulia
+# docker push cedorman/combined_withjulia
+

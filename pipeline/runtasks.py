@@ -24,7 +24,7 @@ class RunTasks:
         self.log.info("Starting runtasks")
         self.definition = MITTaskDefinition()
 
-    def runThreadOnMachine(self, machine_dns):
+    def runThreadOnEC2Machine(self, machine_dns):
         """ Function that runs on its own thread, with thread-local variable of the machine to use.  While
         there are more task files to run, get one and run it, exiting the thread when there are no more tasks."""
 
@@ -66,7 +66,7 @@ class RunTasks:
         # Create a thread for each machine
         threads = []
         for machine in self.available_machines:
-            processThread = threading.Thread(target=self.runThreadOnMachine, args=(machine,))
+            processThread = threading.Thread(target=self.runThreadOnEC2Machine, args=(machine,))
             processThread.start()
             threads.append(processThread)
 

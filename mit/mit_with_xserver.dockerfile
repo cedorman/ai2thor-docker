@@ -1,6 +1,8 @@
-# FROM gen-pram-combined:latest
+FROM gen-pram-combined:latest
 # FROM gen-pram-combined_3.5:latest
-FROM gen-pram-combined_3.7_fixed:latest
+
+ENV GEN_EXECUTABLE_PATH=/MCS-AI2-THOR-Unity-App-v0.3.7.x86_64
+RUN unset DISPLAY
 
 # ------------------------------
 # The base image from IBMMIT does not have all the pci and X11 stuff we need
@@ -22,7 +24,8 @@ RUN NVIDIA_VERSION=450.80.02 /mcs/install_nvidia.sh
 ADD run_startx.py /mcs
 COPY ai2thor_docker /mcs/ai2thor_docker
 
-# Task for testing 
+# Code and task for testing 
+ADD mcs_test.py /mcs
 ADD retrieval_goal-0005.json /mcs
 
 # ------------------------------
@@ -32,7 +35,7 @@ ADD retrieval_goal-0005.json /mcs
 # ADD mit/mcs_config_oracle.yaml /
 # ADD mit/mcs_config_level1.yaml /
 # ADD mit/mcs_config_level2.yaml /
-ENV MCS_CONFIG_FILE_PATH /mcs_config_level1.yaml
+# ENV MCS_CONFIG_FILE_PATH /mcs_config_level1.yaml
 
 # ------------------------------
 # Julia is using the wrong ssl libs, no idea why.  Getting error: 
@@ -43,3 +46,6 @@ RUN apt install -y libssl-dev && \
     cp /usr/lib/x86_64-linux-gnu/libcrypto.so.1.1 /root/.julia/artifacts/e6e5f41352118bbeb44677765ebccab8c151c72a/lib/ && \ 
     cp /usr/lib/x86_64-linux-gnu/libssl.so.1.1  /root/.julia/artifacts/e6e5f41352118bbeb44677765ebccab8c151c72a/lib/
 
+ADD MCS-AI2-THOR-Unity-App-v0.3.7_Data.tgz /
+ADD MCS-AI2-THOR-Unity-App-v0.3.7.x86_64 /
+RUN chmod +x /MCS-AI2-THOR-Unity-App-v0.3.7.x86_64

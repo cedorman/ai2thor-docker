@@ -49,11 +49,11 @@ def test_getAWSMachines():
     print(f"Current t2.micro Machines:")
     print(json.dumps(machines, indent=4, default=str))
 
-    machines = util.getAWSMachines(machine_type='*', location='*')
+    machines = util.getAWSMachines(machine_type='*', location='us-east-1')
     print(f"All Current Machines:")
     print(json.dumps(machines, indent=4, default=str))
 
-    machines = util.getAWSMachines(machine_type='p2.xlarge', location='*')
+    machines = util.getAWSMachines(machine_type='p2.xlarge', location='us-east-1')
     print(f"p2.xlarge Current Machines:")
     print(json.dumps(machines, indent=4, default=str))
 

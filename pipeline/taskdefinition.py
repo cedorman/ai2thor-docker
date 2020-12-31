@@ -11,7 +11,9 @@ class TaskDefinition:
 
     """
     process_command = []
+    where_to_put_json = ""
 
 
 class MITTaskDefinition(TaskDefinition):
-    process_command = [ "MCS_CONFIG_FILE=/mcs_config_level2.yaml /home/ubuntu/mitscript.sh"]
+    process_command = [ "MCS_CONFIG_FILE=mcs_config_level1.yaml /home/ubuntu/mitscript.sh"]
+    where_to_put_json = "/home/ubuntu/input/"

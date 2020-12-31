@@ -8,7 +8,10 @@
 # See:  https://unix.stackexchange.com/questions/33271/how-to-avoid-ssh-asking-permission
 #
 # 2. Set your AWS credentials in ~/.aws/credentials.  This is needed to get the S3 buckets and
-# AWS machines to use
+# AWS machines to use.
+#
+
+
 import os
 import subprocess
 import time
@@ -39,13 +42,11 @@ def getS3Buckets():
 def getAWSMachines(machine_type='p2.xlarge', location='us-east-1'):
     """ Look on AWS and determine all the machines that we have running AWS that we can use.
     The assumption is that we are looking for machines of type machine_type.
-
-    If you want to have all types or all locations, use '*'
     """
 
     machines = []
 
-    ec2 = boto3.client('ec2')
+    ec2 = boto3.client('ec2', region_name=location)
     response = ec2.describe_instances()
     reservations = response.get('Reservations')
     for reservation in reservations:
@@ -137,9 +138,9 @@ def dockerRunCommand(machine_dns, json_file_name_fullpath, command, log=None):
     return return_code, output_file
 
 
-def copyFileToAWS(machine_dns, file_name_fullpath, log=None):
+def copyFileToAWS(machine_dns, file_name_fullpath, log=None, remote_dir=""):
     head, tail = path.split(file_name_fullpath)
-    ubuntu_machine_dns = getRemoteUserInfo(machine_dns) + ":" + tail
+    ubuntu_machine_dns = getRemoteUserInfo(machine_dns) + ":" + remote_dir + tail
     process_command = ['scp', '-i', PEM_FILE, file_name_fullpath, ubuntu_machine_dns]
     return_code, _ = runCommandAndCaptureOutput(process_command, log)
     return return_code

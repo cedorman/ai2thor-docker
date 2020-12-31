@@ -23,3 +23,30 @@ time docker run --rm -e PYTHONIOENCODING=utf8 -e XAUTHORITY=/tmp/.docker.xauth -
 
 # cd /root/.julia/dev/GenPRAM.jl/agent_experiments/
 # julia container_execution.jl
+
+# ----------------------------------------------------------------------
+
+# Set correct tasks in input
+#     cd input
+#     cp ~/tasks/unzipped/* .
+# Set correct location for output
+#     edit data/mcs_config_level2.yaml  
+
+# Run docker container: 
+#   docker run -it --privileged -v /home/ubuntu/input:/input -v /home/ubuntu/debug:/debug -v /home/ubuntu/data:/data cedorman/combined_withjulia:latest /bin/bash
+
+# Within docker container, set config to use
+#    export MCS_CONFIG_FILE_PATH=/data/mcs_config_level1.yaml
+#    export MCS_CONFIG_FILE_PATH=/data/mcs_config_level2.yaml
+# Start X
+#    cd /mcs
+#    python3 run_startx.py &
+# Run code:
+#    cd /root/.julia/dev/GenPRAM.jl/agent_experiments/ && julia container_execution.jl
+
+
+# How long to run ---------
+#   2:53 utc 
+#  22:17 local  23  24  1  2  3:17
+#   24 minutes for 16  -->  1.5 min per task
+#   for 1360 tasks -->  2010 minutes  or 33.5 hrs.   
