@@ -24,6 +24,7 @@ from pipeline.secrets import Secrets
 PEM_FILE = Secrets['PEM_FILE']
 USERNAME = Secrets['USERNAME']
 
+
 def getDateInFileFormat():
     """Get the date in a format like 2020-03-01, useful for creating files"""
     timeInFileFormat = time.strftime('%Y-%m-%d', time.localtime(time.time()))
@@ -110,6 +111,25 @@ def runCommandAndCaptureOutput(commandList, log=None):
                         log.info(f"Output: {output}")
             break
     return return_code, output_file
+
+
+def shellRunCommand(machine_dns, command, log=None):
+    userInfo = getRemoteUserInfo(machine_dns)
+    process_command = ["ssh", "-i", PEM_FILE, userInfo, command]
+    return_code, _ = runCommandAndCaptureOutput(process_command, log)
+    return return_code
+
+
+def shellRunBackground(machine_dns, command, log=None):
+    userInfo = getRemoteUserInfo(machine_dns)
+
+    # This is surprisingly difficult.  We need to run a command, then disconnect.
+    # See:  https://unix.stackexchange.com/questions/572798/how-can-i-start-a-long-running-background-process-via-ssh-and-immediately-disc
+    # Should probably be using python daemon command.
+    process_command = f"ssh -i {PEM_FILE} {userInfo} {command} & sleep 20 && exit"
+    log.info("Running command: " + process_command)
+    return_code = os.system(process_command)
+    return return_code
 
 
 def dockerRunCommand(machine_dns, json_file_name_fullpath, command, log=None):
