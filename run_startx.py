@@ -5,7 +5,7 @@
 # it saves an image 
 #
 #
-import machine_common_sense as mcs
+# import machine_common_sense as mcs
 from ai2thor_docker.x_server import startx
 import time
 import sys
