@@ -39,7 +39,7 @@ def getS3Buckets():
         buckets.append(bucket.name)
     return buckets
 
-
+# TODO:  Add ability to look for particular tags (key,value) because might have multiple sets of machines
 def getAWSMachines(machine_type='p2.xlarge', location='us-east-1'):
     """ Look on AWS and determine all the machines that we have running AWS that we can use.
     The assumption is that we are looking for machines of type machine_type.

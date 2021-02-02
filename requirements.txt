@@ -1,2 +1,2 @@
 boto3
-ai2thor
+# ai2thor

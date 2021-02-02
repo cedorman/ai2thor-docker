@@ -7,14 +7,14 @@ from os.path import isfile, join
 
 from pipeline import logger
 from pipeline import util
-from pipeline.baseline_singletask import BaselineSingleTask
+from pipeline.mess_singletask import MessSingleTask
 from pipeline.xserver_check import XServerCheck
 from pipeline.xserver_startup import XServerStartup
 
 TASK_FILE_PATH = "/home/ced/work/mcs/eval3/tasks/togo/"
 
 
-class RunTasks:
+class MessRunTasks:
 
     def __init__(self):
         self.available_machines = []
@@ -43,7 +43,7 @@ class RunTasks:
             task_file = task_files_full_path.pop(0)
             lock.release()
 
-            singleTask = BaselineSingleTask(machine_dns, task_file, threadlog, None)
+            singleTask = MessSingleTask(machine_dns, task_file, threadlog, None)
             return_code = singleTask.process()
 
             if return_code > 0:
@@ -79,10 +79,11 @@ class RunTasks:
 
         self.log.info("Ending runtasks")
 
-    def runStartup(self):
+    def getMachines(self):
         self.available_machines = util.getAWSMachines()
         self.log.info(f"Machines available {self.available_machines}")
 
+    def runStartup(self):
         for machine in self.available_machines:
             bs = XServerStartup(machine, self.log)
             bs.process()
@@ -97,7 +98,9 @@ class RunTasks:
 
 
 if __name__ == '__main__':
-    run_tasks = RunTasks()
+    run_tasks = MessRunTasks()
+    run_tasks.getMachines()
+
     # run_tasks.runStartup()
     # run_tasks.runCheckXorg()
-    run_tasks.runTasks()
+    # run_tasks.runTasks()

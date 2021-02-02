@@ -1,12 +1,12 @@
 #
-# Runs a single job on a single machine
+# Starts the XServer on the remote machine
 #
 import os.path
 
 from pipeline import util
 
 
-class BaselineCheckXorg:
+class XServerStartup:
 
     def __init__(self, machine_dns, log):
         self.machine_dns = machine_dns
@@ -17,8 +17,8 @@ class BaselineCheckXorg:
         self.log.info(f"Startup on machine {self.machine_dns}")
 
         # Clear out current tasks
-        cmd = "ps auxwww | grep Xorg"
-        return_code = util.shellRunCommand(self.machine_dns, cmd, self.log)
+        cmd = "\"cd ~/ai2thor-docker/ && sudo python3 run_startx.py > /dev/null 2>&1 &\""
+        return_code = util.shellRunBackground(self.machine_dns, cmd, self.log)
         if return_code != 0:
             self.log.warn("Failed on starup step")
             return return_code
