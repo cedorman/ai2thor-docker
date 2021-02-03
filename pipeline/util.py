@@ -114,6 +114,8 @@ def runCommandAndCaptureOutput(commandList, log=None):
 
 
 def shellRunCommand(machine_dns, command, log=None):
+    '''Run the command on the remote machine using ssh.'''
+    # TODO:  Add timeout
     userInfo = getRemoteUserInfo(machine_dns)
     process_command = ["ssh", "-i", PEM_FILE, userInfo, command]
     return_code, _ = runCommandAndCaptureOutput(process_command, log)

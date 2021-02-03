@@ -1,10 +1,11 @@
 #
-# Starts the XServer on the remote machine
+# Starts the XServer on the remote machine.  Since this takes a while, we start a new thread
+# for it to run on, and return
 #
 import os.path
+import threading
 
 from pipeline import util
-
 
 class XServerStartup:
 
@@ -12,11 +13,11 @@ class XServerStartup:
         self.machine_dns = machine_dns
         self.log = log
 
-    def process(self):
-
+    def start_x(self):
+        '''Start the X server on the remote machine'''
         self.log.info(f"Startup on machine {self.machine_dns}")
 
-        # Clear out current tasks
+        # Start it with the following command.  Put in quotes so all one command.
         cmd = "\"cd ~/ai2thor-docker/ && sudo python3 run_startx.py > /dev/null 2>&1 &\""
         return_code = util.shellRunBackground(self.machine_dns, cmd, self.log)
         if return_code != 0:
@@ -24,3 +25,7 @@ class XServerStartup:
             return return_code
 
         return return_code
+
+    def process(self):
+        x = threading.Thread(target=self.start_x)
+        x.start()

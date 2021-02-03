@@ -7,11 +7,14 @@ from os.path import isfile, join
 
 from pipeline import logger
 from pipeline import util
+from pipeline.mess_config_change import MessConfigChange
 from pipeline.mess_singletask import MessSingleTask
 from pipeline.xserver_check import XServerCheck
 from pipeline.xserver_startup import XServerStartup
 
-TASK_FILE_PATH = "/home/ced/work/mcs/eval3/tasks/togo/"
+# Uncomment one of the following.  The first is for testing;  the second is for _all_ tasks (14600 of them)
+TASK_FILE_PATH = "/home/clark/work/mcs/eval3/tasks/passive/all"
+# TASK_FILE_PATH = "/home/clark/work/mcs/ai2thor-docker-cedorman/pipeline/taskfiles/"
 
 
 class MessRunTasks:
@@ -52,12 +55,8 @@ class MessRunTasks:
                 task_files_full_path.append(task_file)
                 lock.release()
 
-    def runTasks(self):
+    def getTasks(self):
         global task_files_full_path
-
-        # Determine the DNS for all the machine that we have, default to us-east-1 and p2.xlarge
-        self.available_machines = util.getAWSMachines()
-        self.log.info(f"Machines available {self.available_machines}")
 
         # Get all the tasks files
         task_files_full_path = [path.abspath(join(TASK_FILE_PATH, f)) for f in listdir(TASK_FILE_PATH) if
@@ -65,6 +64,13 @@ class MessRunTasks:
         task_files_full_path.sort()
         print(f"Tasks file {task_files_full_path}")
         self.log.info(f"Number of tasks: {len(task_files_full_path)}")
+
+    def runTasks(self):
+        self.getTasks()
+
+        # Determine the DNS for all the machine that we have, default to us-east-1 and p2.xlarge
+        self.available_machines = util.getAWSMachines()
+        self.log.info(f"Machines available {self.available_machines}")
 
         # Create a thread for each machine
         threads = []
@@ -83,12 +89,24 @@ class MessRunTasks:
         self.available_machines = util.getAWSMachines()
         self.log.info(f"Machines available {self.available_machines}")
 
-    def runStartup(self):
+    def runXStartup(self):
+        ''' Start X Server on all the machines.  Note:  Not parallelized'''
         for machine in self.available_machines:
             bs = XServerStartup(machine, self.log)
             bs.process()
 
+    def kill_and_restartX(self):
+        for machine in self.available_machines:
+            bs = XServerStartup(machine, self.log)
+            bs.kill_and_restart()
+
+    def change_mcs_config(self):
+        for machine in self.available_machines:
+            bs = MessConfigChange(machine, self.log)
+            bs.process()
+
     def runCheckXorg(self):
+        ''' Check X Server on all the machines.  Note:  Not parallelized'''
         self.available_machines = util.getAWSMachines()
         self.log.info(f"Machines available {self.available_machines}")
 
@@ -100,7 +118,8 @@ class MessRunTasks:
 if __name__ == '__main__':
     run_tasks = MessRunTasks()
     run_tasks.getMachines()
-
-    # run_tasks.runStartup()
+    # run_tasks.getTasks()
+    # run_tasks.change_mcs_config()
+    # run_tasks.runXStartup()
     # run_tasks.runCheckXorg()
-    # run_tasks.runTasks()
+    run_tasks.runTasks()
