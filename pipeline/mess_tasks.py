@@ -12,10 +12,13 @@ from pipeline.mess_singletask import MessSingleTask
 from pipeline.xserver_check import XServerCheck
 from pipeline.xserver_startup import XServerStartup
 
+TASKS_IN_FILE = True
 # Uncomment one of the following.  The first is for testing;  the second is for _all_ tasks (14600 of them)
-TASK_FILE_PATH = "/home/clark/work/mcs/eval3/tasks/passive/all"
+# TASK_FILE_PATH = "/home/clark/work/mcs/eval3/tasks/passive/all"
 # TASK_FILE_PATH = "/home/clark/work/mcs/ai2thor-docker-cedorman/pipeline/taskfiles/"
-
+# TASK_FILE_PATH = "broken_tasks.txt"
+TASK_FILE_PATH = "delta_echo_foxtrot.txt"
+# TASK_FILE_PATH = "single_task.txt"
 
 class MessRunTasks:
 
@@ -58,9 +61,19 @@ class MessRunTasks:
     def getTasks(self):
         global task_files_full_path
 
-        # Get all the tasks files
-        task_files_full_path = [path.abspath(join(TASK_FILE_PATH, f)) for f in listdir(TASK_FILE_PATH) if
-                                isfile(join(TASK_FILE_PATH, f))]
+
+        if TASKS_IN_FILE:
+            task_files_full_path = []
+            task_file = open(TASK_FILE_PATH, 'r')
+            lines = task_file.readlines()
+            for line in lines:
+                if line != None and len(line) > 0:
+                    task_files_full_path.append(line.strip())
+        else:
+            # Get all the tasks files from a directory
+            task_files_full_path = [path.abspath(join(TASK_FILE_PATH, f)) for f in listdir(TASK_FILE_PATH) if
+                                    isfile(join(TASK_FILE_PATH, f))]
+
         task_files_full_path.sort()
         print(f"Tasks file {task_files_full_path}")
         self.log.info(f"Number of tasks: {len(task_files_full_path)}")
@@ -118,8 +131,12 @@ class MessRunTasks:
 if __name__ == '__main__':
     run_tasks = MessRunTasks()
     run_tasks.getMachines()
-    # run_tasks.getTasks()
+    run_tasks.getTasks()
+
     # run_tasks.change_mcs_config()
     # run_tasks.runXStartup()
     # run_tasks.runCheckXorg()
+
     run_tasks.runTasks()
+
+

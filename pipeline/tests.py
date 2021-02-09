@@ -58,8 +58,14 @@ def test_getAWSMachines():
     print(json.dumps(machines, indent=4, default=str))
 
 
+def run_test_mess():
+    machine = "ec2-52-205-76-200.compute-1.amazonaws.com"
+    run_command = "cd /home/ubuntu/mess_original_code/mess_final/ && ./runall.sh"
+    util.shellRunCommand(machine, run_command, None)
+
 # test_copyFileToAWS()
 # test_copyFileFromAWS()
 # test_printCommand()
 # test_getS3Buckets()
-test_getAWSMachines()
+# test_getAWSMachines()
+run_test_mess()
